@@ -1,3 +1,12 @@
+# Week 1: Day 2
+
+tool: html, d3
+
+task: recreate sketches
+
+time: 30 mins
+
+
 # Week 1: Day 1
 
 tool: html, claude sonnet 3.5, html, css

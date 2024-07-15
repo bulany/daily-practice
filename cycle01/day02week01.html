@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="js/d3.v7.min.js"></script>
+    <style>
+      body {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+      }
+
+      div {
+        border: 1px solid black;
+        margin: 5px;
+        padding: 0;
+        width: 200px;
+        height: 200px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="sketch1">
+    </div>
+    <script>
+      function sketch1() {
+        const svg = d3.select('#sketch1').append('svg')
+        const circle = svg.append('circle').attr('r', 100)
+      }
+
+      sketch1()
+
+
+      function sketch2() {
+        const div = document.createElement('div')
+        document.body.append(div)
+        const svg = d3.select(div).append('svg')
+        const circle = svg.append('circle').attr('r', 50)
+      }
+
+      sketch2()
+
+      function sketch3() {
+        const div = document.createElement('div')
+        document.body.append(div)
+        const svg = d3.select(div).append('svg')
+        const circle = svg.append('circle')
+          .attr('r', 20)
+          .attr('cx', 40)
+          .attr('cy', 40)
+      }
+
+      sketch3()
+
+      function newSvg() {
+        const div = document.createElement('div')
+        document.body.append(div)
+        const svg = d3.select(div).append('svg').attr('viewBox', '-2 -2 102 102')
+        return svg;
+      }
+
+      function sketch4() {
+        const svg = newSvg()
+        const circle = svg.append('circle')
+          .attr('r', 50)
+          .attr('cx', 50)
+          .attr('cy', 50)
+      }
+
+      sketch4()
+
+      function newCircle(svg, cx, cy, r) {
+        const circle = svg.append('circle')
+          .attr('r', r)
+          .attr('cx', cx)
+          .attr('cy', cy)
+          .attr('fill', 'none')
+          .attr('stroke', 'black')
+          .attr('stroke-width', 2)
+        return circle
+      }
+
+      function sketch5() {
+        const svg = newSvg()
+        newCircle(svg, 20, 20, 5)
+        newCircle(svg, 40, 50, 9)
+        newCircle(svg, 100, 80, 12)
+      }
+
+      sketch5()
+
+      function sketch6() {
+        const svg = newSvg()
+        newCircle(svg, 20, 30, 5)
+        newCircle(svg, 45, 29, 9)
+        newCircle(svg, 75, 25, 12)
+      }
+
+      sketch6()
+
+    </script>
+  </body>
+</html>
