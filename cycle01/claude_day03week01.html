@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <svg width="600" height="400"></svg>
+    <script>
+        const svg = d3.select('svg');
+        const width = 600;
+        const height = 400;
+
+        // Define the main path
+        const mainPath = [
+            {x: 50, y: 200},
+            {x: 200, y: 200},
+            {x: 300, y: 200}
+        ];
+
+        // Define the first branch
+        const branch1 = [
+            {x: 300, y: 200},
+            {x: 400, y: 100},
+            {x: 500, y: 100}
+        ];
+
+        // Define the second branch
+        const branch2 = [
+            {x: 300, y: 200},
+            {x: 400, y: 300},
+            {x: 500, y: 300}
+        ];
+
+        // Define the sub-branch
+        const subBranch = [
+            {x: 500, y: 300},
+            {x: 550, y: 250},
+            {x: 575, y: 275}
+        ];
+
+        // Create a line generator
+        const lineGenerator = d3.line()
+            .x(d => d.x)
+            .y(d => d.y)
+            .curve(d3.curveBasis);
+
+        // Draw the main path
+        svg.append('path')
+            .attr('d', lineGenerator(mainPath))
+            .attr('stroke', 'blue')
+            .attr('fill', 'none');
+
+        // Draw the first branch
+        svg.append('path')
+            .attr('d', lineGenerator(branch1))
+            .attr('stroke', 'green')
+            .attr('fill', 'none');
+
+        // Draw the second branch
+        svg.append('path')
+            .attr('d', lineGenerator(branch2))
+            .attr('stroke', 'red')
+            .attr('fill', 'none');
+
+        // Draw the sub-branch
+        svg.append('path')
+            .attr('d', lineGenerator(subBranch))
+            .attr('stroke', 'purple')
+            .attr('fill', 'none');
+    </script>
+</body>
+</html>

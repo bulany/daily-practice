@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      border: 1px solid black;
+      margin: 5px;
+      padding: 0;
+      width: 200px;
+      height: 200px;
+    }
+
+  </style>
+
+</head>
+<body>
+  <script>
+    function newSvg() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg').attr('viewBox', '0 0 100 100')
+      return svg;
+    }
+
+    function sketch1() {
+      const svg = newSvg()
+      svg.append('circle')
+        .attr('r', 25)
+        .attr('cx', 50)
+        .attr('cy', 50)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+    }
+
+    sketch1()
+
+
+    function newCircle(svg, r, cx, cy) {
+      const circle = svg.append('circle')
+        .attr('r', r)
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+      return circle
+    }
+
+    function sketch2() {
+      const svg = newSvg()
+      newCircle(svg, 12, 20, 20)
+      newCircle(svg, 10, 40, 23)
+      newCircle(svg, 8, 60, 18)
+    }
+
+    sketch2()
+
+    function sketch3() {
+      const svg = newSvg()
+      newCircle(svg, 10, 20, 25)
+      newCircle(svg, 8, 50, 23)
+      newCircle(svg, 11, 75, 18)
+    }
+
+    sketch3()
+
+    const circle1 = {r: 10, x: 20, y: 25}
+    const circle2 = {r: 8, x: 43, y: 23}
+    const circle3 = {r: 11, x: 75, y: 18}
+    
+    const circles = [circle1, circle2, circle3]
+
+    function newCircleFromObj(svg, circleObj) {
+      const circle = newCircle(svg, circleObj.r, circleObj.x, circleObj.y)
+      return circle
+    } 
+
+    function sketch4() {
+      const svg = newSvg()
+      circles.forEach(el => {newCircleFromObj(svg, el)})
+    }
+
+    sketch4()
+
+    function sketch5() {
+      const svg = newSvg()
+      circles.forEach(el => {newCircleFromObj(svg, el)})
+    }
+
+    sketch5()
+    
+      
+  </script>
+</body>
+</html>
