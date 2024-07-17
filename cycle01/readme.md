@@ -1,3 +1,13 @@
+# Week 1: Day 4
+
+tool: html, d3, svg
+
+task: recreate sketches
+
+purpose: get better at drawing with svg and d3
+
+time: 30 mins 
+
 # Week 1: Day 3
 
 tool: html, d3, svg

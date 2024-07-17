@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      border: 1px solid black;
+      margin: 5px;
+      padding: 0;
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function newSvg() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg').attr('viewBox', '0 0 100 100')
+      return svg;
+    }
+
+    function newCircle(svg, r, cx, cy) {
+      const circle = svg.append('circle')
+        .attr('r', r)
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+      return circle
+    }
+
+    const circle1 = { r: 10, x: 20, y: 25 }
+    const circle2 = { r: 8, x: 43, y: 23 }
+    const circle3 = { r: 11, x: 75, y: 18 }
+
+    const circles = [circle1, circle2, circle3]
+
+    function newCircleFromObj(svg, circleObj) {
+      const circle = newCircle(svg, circleObj.r, circleObj.x, circleObj.y)
+      return circle
+    }
+
+    function sketch1() {
+      const svg = newSvg()
+      circles.forEach(el => { newCircleFromObj(svg, el) })
+    }
+
+    sketch1()
+
+    const curve = d3.line().curve(d3.curveNatural)
+    const points = [[50, 95], [50, 75], [40, 55], [30, 45]]
+
+    function sketch2() {
+      const svg = newSvg()
+      circles.forEach(el => { newCircleFromObj(svg, el) })
+      svg.append('path')
+        .attr('d', curve(points))
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none')
+    }
+
+    sketch2()
+
+    function newLine(svg, pointList) {
+      svg.append('path')
+        .attr('d', curve(pointList))
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none')
+    }
+
+    function sketch3() {
+      const svg = newSvg()
+      circles.forEach(el => { newCircleFromObj(svg, el) })
+      points.push([circle1.x, circle1.y])
+      newLine(svg, points)
+      points.push([circle2.x, circle1.y])
+      newLine(svg, points) 
+      points.push([circle3.x, circle1.y]) 
+      newLine(svg, points)  
+    }
+
+    sketch3()
+
+    const originalPoints = [points[0], points[1], points[2], points[3]]
+
+    function sketch4() {
+      const svg = newSvg()
+      circles.forEach(el => { newCircleFromObj(svg, el) })
+      newLine(svg, [...originalPoints, [circle1.x, circle1.y]])
+      newLine(svg, [...originalPoints, [circle2.x, circle2.y]])
+      newLine(svg, [...originalPoints, [circle3.x, circle3.y]])
+    }
+
+    sketch4()
+
+    function newCircle2FromObj(svg, circleObj) {
+      const circle = svg.append('circle')
+        .attr('r', circleObj.r)
+        .attr('cx', circleObj.x)
+        .attr('cy', circleObj.y)
+        .attr('fill', 'white')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+      return circle
+    }
+
+    function sketch5() {
+      const svg = newSvg()
+      newLine(svg, [...originalPoints, [circle1.x, circle1.y]])
+      newLine(svg, [...originalPoints, [circle2.x, circle2.y]])
+      newLine(svg, [...originalPoints, [circle3.x, circle3.y]])
+      circles.forEach(el => { newCircle2FromObj(svg, el) })
+    }
+
+    sketch5()
+
+
+
+  </script>
+</body>
+
+</html>
