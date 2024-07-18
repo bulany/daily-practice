@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      border: 1px solid black;
+      margin: 5px;
+      padding: 0;
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg').attr('viewBox', '0 0 100 100')
+      return svg;
+    }
+
+    d3.selection.prototype.drawCircle = function(center, radius) {
+      return this.append('circle')
+        .attr('r', radius)
+        .attr('cx', center[0])
+        .attr('cy', center[1])
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+    }
+
+    d3.selection.prototype.drawFlower = function(flower) {
+      return this.drawCircle(flower.end, flower.r)
+    }
+
+    d3.selection.prototype.drawFlowers = function(flowers) {
+      flowers.forEach(flower => this.drawFlower(flower))
+      return this;
+    }
+
+    const base = [50, 80];
+
+    const flowers = [
+      { start: base, end: [20, 20], r: 10 },
+      { start: base, end: [48, 24], r: 8 },
+      { start: base, end: [74, 19], r: 12 }
+    ]
+
+
+    // Sketch 1
+    newSketch().drawFlowers(flowers)
+
+    d3.selection.prototype.drawLine = function(start, end) {
+      return this.append('line')
+        .attr('x1', start[0])
+        .attr('y1', start[1])
+        .attr('x2', end[0])
+        .attr('y2', end[1])
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+    }
+
+    d3.selection.prototype.drawFlower = function(flower) {
+      this.drawLine(flower.start, flower.end)
+      return this.drawCircle(flower.end, flower.r)
+    }
+
+
+    // Sketch 2
+    newSketch().drawFlowers(flowers)
+
+
+    // Sketch 3
+
+    d3.selection.prototype.drawCircle = function(center, radius) {
+      return this.append('circle')
+        .attr('r', radius)
+        .attr('cx', center[0])
+        .attr('cy', center[1])
+        .attr('fill', 'white')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 2)
+    }
+
+    newSketch().drawFlowers(flowers)
+
+
+    // Sketch 4
+    d3.selection.prototype.drawSegLine = function(start, end) {
+      const yDelta = end[1] - end[0]
+      const yThird = yDelta / 3
+      const mid1 = [start[0], start[1] + yThird]
+      const mid2 = [end[0], mid1[1] + yThird]
+      this.drawLine(start, mid1)
+      this.drawLine(mid1, mid2)
+      this.drawLine(mid2, end)
+      return this
+    }
+    
+
+    d3.selection.prototype.drawFlower = function(flower) {
+      this.drawSegLine(flower.start, flower.end)
+      return this.drawCircle(flower.end, flower.r)
+    }
+
+    newSketch().drawFlowers(flowers)
+
+
+  </script>
+
+</body>
+
+</html>

@@ -1,3 +1,13 @@
+# Week 1: Day 5
+
+tool: html, d3, svg, js
+
+task: recreate sketches
+
+purpose: get good at drawing curved lines with d3
+
+time: 30 mins
+
 # Week 1: Day 4
 
 tool: html, d3, svg
