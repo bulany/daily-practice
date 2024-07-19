@@ -1,3 +1,13 @@
+# Week 1: Day 6
+
+tool: html, d3, svg, js
+
+task: recreate sketches
+
+purpose: get good at drawing lines in d3
+
+time: 30 mins
+
 # Week 1: Day 5
 
 tool: html, d3, svg, js

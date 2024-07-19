@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      border: 1px solid black;
+      margin: 5px;
+      padding: 0;
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+
+    let base = {x: 50, y: 80}
+    let flowerHead1 = {x: 20, y: 20}
+    let flowerHead2 = {x: 48, y: 24}
+    let flowerHead3 = {x: 74, y: 19}
+
+
+    const flowers = [
+      {start: base, end: flowerHead1, radius: 10},
+      {start: base, end: flowerHead2, radius: 8},
+      {start: base, end: flowerHead3, radius: 12},
+    ]
+
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg').attr('viewBox', '0 0 100 100')
+      return svg
+    }
+
+    let fill = 'white'
+    let stroke = 'black'
+    let stroke_width = 2
+
+    d3.selection.prototype.drawCircle = function(centre, radius) {
+      return this.append('circle')
+        .attr('cx', centre.x)
+        .attr('cy', centre.y)
+        .attr('r', radius)
+        .attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    // Sketch 1
+    newSketch().drawCircle(flowerHead1, flowers[0].radius)
+
+    const line = d3.line()
+      .x(p => p.x)
+      .y(p => p.y)
+      .curve(d3.curveBumpY)
+    
+
+    d3.selection.prototype.drawLine = function(points) {
+      return this.append('path')
+        .datum(points)
+        .attr('d', line)
+        .attr('fill', 'none')
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    // Sketch 2
+    newSketch().drawLine([flowerHead1, flowerHead2, flowerHead3])
+
+
+    // Sketch 3
+    newSketch().drawLine([base, flowerHead1]).drawLine([base, flowerHead2])
+
+    d3.selection.prototype.drawFlower = function(flower) {
+      this.drawLine([flower.start, flower.end])
+      this.drawCircle(flower.end, flower.radius)
+      return this
+    }
+
+    // Sketch 4
+    newSketch().drawFlower(flowers[0])
+
+    d3.selection.prototype.drawFlowers = function(flowers) {
+      flowers.forEach(flower => this.drawFlower(flower))
+    }
+
+    newSketch().drawFlowers(flowers)
+
+    
+
+
+
+
+  </script>
+</body>
+
+</html>
