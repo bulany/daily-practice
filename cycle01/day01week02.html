@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      border: 1px solid black;
+      width: 200px;
+      height: 200px;
+      margin: 5px;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg').attr('viewBox', '-100 -100 200 200')
+      return svg
+    }
+
+    let fill = 'white'
+    let stroke = 'black'
+    let stroke_width = 2
+
+    d3.selection.prototype.drawCircle = function (r, { x: cx, y: cy }) {
+      this.append('circle')
+        .attr('r', r)
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    function p(x, y) {
+      return { x: x, y: y }
+    }
+
+    const center = p(0, 0)
+
+    newSketch().drawCircle(10, center)
+
+    d3.selection.prototype.drawPoint = function (point) {
+      return this.drawCircle(5, point)
+    }
+
+    d3.selection.prototype.drawPoints = function (points) {
+      points.forEach(point => this.drawPoint(point))
+      return this
+    }
+
+
+    const heads = [
+      p(-70, -80),
+      p(-4, -78),
+      p(68, -90),
+      p(-65, 70),
+      p(67, 50)
+    ]
+
+    newSketch().drawPoints(heads).drawPoint(center)
+
+    let line = d3.line().x(p => p.x).y(p => p.y).curve(d3.curveNatural)
+
+    d3.selection.prototype.drawCurve = function (points) {
+      return this.append('path')
+        .datum(points)
+        .attr('d', line)
+        .attr('fill', 'none')
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    newSketch().drawPoints(heads).drawCurve(heads)
+
+    line = d3.line().x(p => p.x).y(p => p.y).curve(d3.curveBumpY)
+
+    newSketch().drawPoints(heads).drawCurve(heads)
+
+    const allPoints = [center, ...heads]
+    newSketch().drawPoints(allPoints).drawCurve(allPoints)
+
+    d3.selection.prototype.drawCurvesFrom = function(start, endPoints) {
+      endPoints.forEach(point => this.drawCurve([start, point]))
+      return this
+    }
+
+    newSketch().drawCurvesFrom(center, heads).drawPoints(heads)
+
+    d3.selection.prototype.drawModCurve = function(start, end) {
+      const dY = end.y - start.y
+      const mid1 = p(start.x, start.y + dY/5)
+      const mid2 = p(end.x, end.y - dY/5)
+      this.drawCurve([start, mid1, mid2, end])
+      return this
+    }
+
+    d3.selection.prototype.drawModCurvesFrom = function(start, endPoints) {
+      endPoints.forEach(point => this.drawModCurve(start, point))
+      return this      
+    }
+
+    newSketch().drawModCurvesFrom(center, heads).drawPoints(heads)
+
+    flowers = [
+      {start: center, end: heads[0], r: 12},
+      {start: center, end: heads[1], r: 10},
+      {start: center, end: heads[2], r: 11},
+      {start: center, end: heads[3], r: 8},
+      {start: center, end: heads[4], r: 9},
+    ]
+
+    d3.selection.prototype.drawFlower = function({start, end, r}) {
+      const dY = end.y - start.y
+      const sign = dY >= 0 ? 1 : -1;
+      const mid2 = p(end.x, end.y - sign*(r + 5))
+      this.drawCurve([start, mid2, end])
+      this.drawCircle(r, end)
+      return this
+    }
+
+    d3.selection.prototype.drawFlowers = function(flowers) {
+      flowers.forEach(flower => this.drawFlower(flower))
+      return this
+    }
+
+    newSketch().drawFlowers(flowers)
+
+
+  </script>
+</body>
+
+</html>
