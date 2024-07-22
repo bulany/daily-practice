@@ -1,0 +1,94 @@
+<!DOCTYPE>
+<html>
+
+<head>
+  <script src="js/d3.v7.min.js"></script>
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      width: 200px;
+      height: 200px;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg').attr('viewBox', '-100 -100 200 200')
+      return svg
+    }
+
+    let fill = 'white'
+    let stroke = 'black'
+    let stroke_width = 2
+
+    d3.selection.prototype.drawCircle = function (r, c) {
+      return this.append('circle')
+        .attr('r', r ?? (d => d.r))
+        .attr('cx', c?.x ?? (d => d.c.x))
+        .attr('cy', c?.y ?? (d => d.c.y))
+        .attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    function p(x, y) { return { x: x, y: y } }
+
+    newSketch().drawCircle(10, p(0, 0))
+
+    let center = p(0, 0)
+
+    let xs = [-80, -60, 0, 45, 75]
+    let ys = [-30, 70, -80, 50, -35]
+    let rs = [10, 12, 8, 9, 8]
+
+    let heads = xs.map((val, i) => p(val, ys[i]))
+    let circles = rs.map((r, i) => { return { r: r, c: heads[i] } })
+
+    newSketch().selectAll('circle').data(circles).enter().drawCircle()
+
+    d3.selection.prototype.drawMany = function (data) {
+      return this.selectAll('g').data(data).enter()
+    }
+
+    newSketch().drawMany(circles).drawCircle()
+
+
+    const customDrawings = {}
+
+    function defineDrawing(name, drawFn) {
+      customDrawings[name] = drawFn
+    }
+
+    d3.selection.prototype.draw = function (name, ...restArgs) {
+      const drawFn = customDrawings[name]
+      if (!drawFn) {
+        console.error(`Drawing function '${name}' not found`)
+        return this
+      }
+      return drawFn.call(this, ...restArgs)
+    }
+
+    defineDrawing('circle', d3.selection.prototype.drawCircle)
+
+    newSketch().draw('circle', 10, { x: 30, y: 50 }).attr('fill', 'red')
+
+    newSketch().drawCircle(20, center)
+
+
+
+
+
+  </script>
+</body>
+
+</html>
