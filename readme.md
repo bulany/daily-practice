@@ -7,6 +7,7 @@ Will try and follow Noah Gibbs Conscious Coding Practice and see what happens.
 ### Week 02
  - https://bulany.github.io/daily-practice/cycle01/day01week02.html
  - https://bulany.github.io/daily-practice/cycle01/day02week02.html
+ - https://bulany.github.io/daily-practice/cycle01/day03week02.html 
 
 ### Week 01
  - https://bulany.github.io/daily-practice/cycle01/day01week01.html
