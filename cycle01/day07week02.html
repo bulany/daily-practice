@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="js/d3.v7.min.js"></script>
+    <style>
+      body {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+      div {
+        width: 200px;
+        height: 200px;
+        border: 1px solid black;
+        padding: 0;
+        margin: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      function newSketch() {
+        const div = document.createElement('div')
+        document.body.append(div)
+        const svg = d3.select(div).append('svg')
+          .attr('viewBox', '-100 -100 200 200')
+        return svg
+      }
+
+      let fill = 'white'
+      let stroke = 'black'
+      let stroke_width = 2
+
+      d3.selection.prototype.drawCircle = function(r, cx, cy) {
+        const circle = this.append('circle')
+          .attr('r', r)
+          .attr('cx', cx)
+          .attr('cy', cy)
+          .attr('fill', fill)
+          .attr('stroke', stroke)
+          .attr('stroke-width', stroke_width)
+        return circle
+      }
+
+      newSketch().drawCircle(10, 0, 0)
+
+      const lineGen = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveBumpY)
+
+      d3.selection.prototype.drawLine = function(points) {
+        const path = this.append('path')
+          .attr('d', lineGen(points))
+          .attr('stroke', stroke)
+          .attr('stroke-width', stroke_width)
+          .attr('fill', 'none')
+        return path
+      }
+
+      const center = [0, 0]
+      let heads = [[0, 0], [12, 15], [60, 72]]
+
+      newSketch().drawLine(heads)
+
+      d3.selection.prototype.drawFlower = function(stemPoints, radius) {
+        this.drawLine(stemPoints)
+        const last = stemPoints.pop()
+        this.drawCircle(radius, last[0], last[1])
+      }
+
+      newSketch().drawFlower(heads, 10)
+
+      {
+        const svg = newSketch();
+        svg.on('click', event => {
+          const [x, y] = d3.pointer(event)
+          const xr = Math.round(x)
+          const yr = Math.round(y)
+          const text = `[${xr}, ${yr}]`
+          console.log(text)
+          svg.drawCircle(5, xr, yr)
+        })
+      }
+
+      const points1 = [[1, 69], [-5, -2], [-41, -39], [-72, -72]]
+      const points2 = [[1, 69], [-5, -2], [-41, -39], [-8, -63]]
+      const points3 = [[1, 69], [-5, -2], [56, -67]]
+
+      const flowers = [
+        {points: points1, r: 10},
+        {points: points2, r: 8},
+        {points: points3, r: 11}
+      ]
+
+      {
+        const svg = newSketch()
+        flowers.forEach(f => {
+          svg.drawFlower(f.points, f.r)
+        })
+      }
+
+      lineGen.curve(d3.curveBumpX)
+
+      {
+        const svg = newSketch()
+        flowers.forEach(f => {
+          svg.drawFlower(f.points, f.r)
+        })
+      }
+
+
+    </script>
+  </body>
+</html>
