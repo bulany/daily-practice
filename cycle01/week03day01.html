@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      width: 200px;
+      height: 200px;
+      border: 1px solid black;
+      padding: 0;
+      margin: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg')
+        .attr('viewBox', '-100 -100 200 200')
+      return svg
+    }
+
+    let fill = 'white'
+    let stroke = 'black'
+    let stroke_width = 2
+
+    d3.selection.prototype.drawCircle = function (r, cx, cy) {
+      return this.append('circle')
+        .attr('r', r)
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    newSketch().drawCircle(5, 0, 0)
+
+
+    {
+      const clicked_points = []
+      const svg = newSketch()
+      svg.on('click', event => {
+        const [x, y] = d3.pointer(event)
+        const [xr, yr] = [Math.round(x), Math.round(y)]
+        svg.drawCircle(5, xr, yr)
+        clicked_points.push([xr, yr])
+        const text = clicked_points.map(p => `[${p[0]}, ${p[1]}]`).join(', ')
+        navigator.clipboard.writeText(`[${text}]`)
+      })
+    }
+
+    const lineGen = d3.line().x(d => d[0]).y(d => d[1])
+
+    d3.selection.prototype.drawLine = function(points) {
+      return this.append('path')
+        .attr('d', lineGen(points))
+        .attr('fill', 'none')
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    const heads = [[-74, -2], [-45, -51], [41, -68], [72, -12]]
+    const center = [0, 0]
+    const radii = [10, 8, 7, 9]
+    {
+      const svg = newSketch()
+      svg.drawLine(heads)
+      heads.forEach(h => svg.drawCircle(5, h[0], h[1]))
+    }
+
+    lineGen.curve(d3.curveNatural)
+    {
+      const svg = newSketch()
+      svg.drawLine(heads)
+      heads.forEach(h => svg.drawCircle(5, h[0], h[1]))
+    }
+
+    lineGen.curve(d3.curveBumpY)
+    {
+      const svg = newSketch()
+      svg.drawLine(heads)
+      heads.forEach(h => svg.drawCircle(5, h[0], h[1]))
+    }
+
+    d3.selection.prototype.drawFlower = function(start, end, r) {
+      this.drawLine([start, end])
+      this.drawCircle(r, end[0], end[1])
+      return this
+    }
+
+    const flowers = heads.map((h, i) => { return {start: center, end: h, r: radii[i]} })
+
+    {
+      const svg = newSketch()
+      flowers.forEach(f => svg.drawFlower(f.start, f.end, f.r))
+    }
+  </script>
+</body>
+
+</html>
