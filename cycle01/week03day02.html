@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      width: 200px;
+      height: 200px;
+      border: 1px solid black;
+      padding: 0;
+      margin: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg')
+        .attr('viewBox', '-100 -100 200 200')
+      return svg
+    }
+
+    let fill = 'white'
+    let stroke = 'black'
+    let stroke_width = 2
+
+    d3.selection.prototype.pen = function(fill, stroke, stroke_width) {
+      return this.attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    d3.selection.prototype.drawCircle = function(r, cx, cy) {
+      return this.append('circle')
+        .attr('r', r)
+        .attr('cx', cx)
+        .attr('cy', cy)
+        .pen('white', 'black', 2)
+    }
+
+    newSketch().drawCircle(5, 0, 0)
+
+    function pointsArrayToString(a) {
+      const texts = a.map(p => `[${p[0]}, ${p[1]}]`)
+      return texts.join(', ')
+    }
+
+    const clicked_points = []
+    {
+      const svg = newSketch()
+      svg.on('click', event => {
+        const [dx, dy] = d3.pointer(event)
+        const [x, y] = [Math.round(dx), Math.round(dy)]
+        clicked_points.push([x, y])
+        navigator.clipboard.writeText(pointsArrayToString(clicked_points))
+        svg.drawCircle(5, x, y)
+      })
+    }
+
+    let heads = [[-65, -4], [-23, -53], [23, -52], [62, -8]]
+    let start = [-4, 36]
+
+    {
+      const svg = newSketch()
+      const all = [...heads, start]
+      all.forEach(p => svg.drawCircle(5, p[0], p[1]))
+    }
+
+    let lineGen = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveNatural)
+
+    d3.selection.prototype.drawLine = function(points) {
+      return this.append('path')
+        .attr('d', lineGen(points))
+        .pen('none', 'black', 2)
+    }
+
+    newSketch().drawLine([...heads, start])
+
+    {
+      const svg = newSketch()
+      heads.forEach(p => {
+        svg.drawLine([start, p])
+        svg.drawCircle(5, p[0], p[1])
+      })
+    }
+
+    lineGen.curve(d3.curveBumpY)
+
+    {
+      const svg = newSketch()
+      heads.forEach(p => {
+        svg.drawLine([start, p])
+        svg.drawCircle(5, p[0], p[1])
+      })
+    }
+
+    const sizes = [5, 7, 9, 6]
+
+    {
+      const svg = newSketch()
+      heads.forEach((p, i) => {
+        svg.drawLine([start, p])
+        svg.drawCircle(sizes[i], p[0], p[1])
+      })
+    }
+
+    lineGen.curve(d3.curveLinear)
+
+    {
+      const svg = newSketch()
+      heads.forEach((p, i) => {
+        svg.drawLine([start, p])
+        svg.drawCircle(sizes[i], p[0], p[1])
+      })
+    }
+
+    lineGen.curve(d3.curveBumpY)
+
+    {
+      const svg = newSketch()
+      const path = svg.drawLine([start, heads[0]])
+      const totalLength = path.node().getTotalLength()
+      console.log('totalLength', totalLength)
+      const targetLength = totalLength * 0.3333
+      const point = path.node().getPointAtLength(targetLength)
+      console.log('point', point)
+      svg.drawLine([[point.x, point.y], heads[1]])
+
+    }
+
+    lineGen.curve(d3.curveBasis)
+
+    {
+      const svg = newSketch()
+      const l = svg.drawLine([[0, 0]])
+      svg.on('click', event => {
+        const [dx, dy] = d3.pointer(event)
+        const [x, y] = [Math.round(dx), Math.round(dy)]
+        clicked_points.push([x, y])
+        navigator.clipboard.writeText(pointsArrayToString(clicked_points))
+        l.attr('d', lineGen(clicked_points))
+        clicked_points.forEach(p => svg.drawCircle(5, p[0], p[1]))
+      })      
+    }
+
+  </script>
+</body>
+
+</html>
