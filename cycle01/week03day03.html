@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      width: 200px;
+      height: 200px;
+      border: 1px solid black;
+      margin: 2px;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg')
+        .attr('viewBox', '-100 -100 200 200')
+      return svg
+    }
+
+
+    d3.selection.prototype.pen = function (fill, stroke, stroke_width) {
+      return this.attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', 2)
+    }
+
+    d3.selection.prototype.drawCircle = function (r, c) {
+      return this.append('circle')
+        .attr('r', r)
+        .attr('cx', c[0])
+        .attr('cy', c[1])
+        .pen('white', 'black', 2)
+    }
+
+    let center = [0, 0]
+    newSketch().drawCircle(5, center)
+
+    let clicked_points = []
+
+    function toString(points) {
+      const strs = clicked_points.map(p => `[${p[0]}, ${p[1]}]`)
+      return `[${strs.join(', ')}]`
+    }
+
+    d3.selection.prototype.onClick = function (fn) {
+      const that = this;
+      that.on('click', event => {
+        const [xd, yd] = d3.pointer(event)
+        const p = [Math.round(xd), Math.round(yd)]
+        clicked_points.push(p)
+        navigator.clipboard.writeText(toString(clicked_points))
+        fn(that)
+      })
+      return that
+    }
+
+    newSketch().onClick(svg => {
+      svg.drawCircle(5, clicked_points[clicked_points.length - 1])
+    })
+
+    d3.selection.prototype.drawCircles = function (a) {
+      const that = this
+      a.forEach(el => that.drawCircle(el.r, el.c))
+      return this
+    }
+
+
+    const saved = [[-70, -2], [-25, -78], [62, -44]]
+    const savedCircles = saved.map(p => { return { r: 5, c: p } })
+    newSketch().drawCircles(savedCircles)
+
+    const headSize = [10, 11, 8]
+
+    const lineGen = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveCatmullRom)
+
+    d3.selection.prototype.drawLine = function (points) {
+      return this.append('path')
+        .attr('d', lineGen(points))
+        .pen('none', 'black', 2)
+    }
+
+    newSketch().drawLine(saved)
+
+    d3.selection.prototype.drawStems = function (stems) {
+      const that = this
+      stems.forEach(s => that.drawLine([s.start, s.end]))
+      return that
+    }
+
+    const savedStems = saved.map(p => { return { start: center, end: p } })
+    newSketch().drawStems(savedStems)
+
+    const start1 = [-5, 54]
+
+    const savedStems2 = saved.map(p => { return { start: start1, end: p } })
+    newSketch().drawStems(savedStems2)
+
+    lineGen.curve(d3.curveBumpY)
+    newSketch().drawStems(savedStems2)
+
+    const points3 = [[44, 60], [-73, -82]]
+
+    const line = newSketch().drawLine(points3)
+
+    console.log(line)
+
+
+
+
+
+
+
+  </script>
+</body>
+
+</html>
