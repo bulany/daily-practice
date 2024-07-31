@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    div {
+      width: 200px;
+      height: 200px;
+      border: 1px solid black;
+      margin: 2px;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function newSketch() {
+      const div = document.createElement('div')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg')
+        .attr('viewBox', '-100 -100 200 200')
+      return svg
+    }
+
+    d3.selection.prototype.pen = function (fill, stroke, stroke_width) {
+      return this.attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    d3.selection.prototype.drawCircle = function (r, [x, y]) {
+      return this.append('circle')
+        .attr('r', r)
+        .attr('cx', x)
+        .attr('cy', y)
+        .pen('white', 'black', 2)
+    }
+
+    newSketch().drawCircle(5, [0, 0])
+
+    const points = [[0, 75], [-60, -80], [40, -70]]
+
+    d3.selection.prototype.drawPoints = function(points) {
+      const that = this
+      points.forEach(p => that.drawCircle(5, p))
+      return that
+    }
+
+    newSketch().drawPoints(points)
+
+    const lineGen = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveBumpY)
+
+    d3.selection.prototype.drawLine = function(points) {
+      this.append('path')
+        .attr('d', lineGen(points))
+        .pen('none', 'black', 2)
+      this.drawPoints(points)
+      return this
+    }
+
+    newSketch().drawLine(points)
+
+    const branch = {
+      start: points[0],
+      end: points[1],
+      branch: 0.3,
+      branchEnd: points[2]
+    }
+
+    d3.selection.prototype.drawBranch = function(b) {
+      this.drawLine([b.start, b.end])
+      const path = this.select('path').node()
+      const totalLength = path.getTotalLength()
+      const targetLength = b.branch * totalLength
+      const branchPoint = path.getPointAtLength(targetLength)
+      const branchPoints = [b.start, [branchPoint.x, branchPoint.y], b.branchEnd]
+      this.drawLine(branchPoints)
+      return this
+    }
+
+    newSketch().drawBranch(branch)
+
+    lineGen.curve(d3.curveCatmullRom)
+
+    newSketch().drawBranch(branch)
+
+    d3.selection.prototype.drawBranch2 = function(b) {
+      const dy = b.end[1] - b.start[1]
+      const vf = 0.1
+      const rootPoints = [b.start, [b.start[0], b.start[1]-(vf*dy)], [b.end[0], b.end[1]-(vf*dy)], b.end]
+      this.drawLine(rootPoints)
+      const path = this.select('path').node()
+      const totalLength = path.getTotalLength()
+      const targetLength = b.branch * totalLength
+      const branchPoint = path.getPointAtLength(targetLength)
+      const branchPoints = [b.start, [branchPoint.x, branchPoint.y], b.branchEnd]
+      this.drawLine(branchPoints)
+      return this
+    }
+
+    newSketch().drawBranch2(branch)
+
+    d3.selection.prototype.pointAlong = function(percent) {
+      const totalLength = this.node().getTotalLength()
+      const targetLength = percent*totalLength
+      const p = this.node().getPointAtLength(targetLength)
+      return [p.x, p.y]
+    }
+
+    lineGen.curve(d3.curveBumpY)
+
+    d3.selection.prototype.drawBranch3 = function(b) {
+      const dy = b.end[1] - b.start[1]
+      const vf = 0.1
+      const rootPoints = [b.start, [b.start[0], b.start[1]-(vf*dy)], [b.end[0], b.end[1]-(vf*dy)], b.end]
+      this.drawLine([b.start, b.end])
+      const path = this.select('path')
+      const branchPoint = path.pointAlong(b.branch)
+      this.drawLine([branchPoint, b.branchEnd])
+      return this
+    }
+
+    newSketch().drawBranch3(branch)
+
+    const customFunctions = {}
+
+    customFunctions.path = function(points) {
+      const path = this.append('path')
+        .attr('d', lineGen(points))
+        .pen('none', 'black', 2)  
+      return path
+    }
+
+    d3.selection.prototype.draw = function(name, args) {
+      const drawFn = customFunctions[name]
+      return drawFn.call(this, args)
+    }
+
+    newSketch().draw('path', points)
+
+    customFunctions.branch = function(b) {
+      const path = this.draw('path', [b.start, b.end])
+      const branchPoint = path.pointAlong(b.branch)
+      this.draw('path', [branchPoint, b.branchEnd])
+      this.drawPoints([b.end, b.branchEnd])
+      return this
+    }
+
+    newSketch().draw('branch', branch)
+
+    const p = points
+
+    const b2 = {
+      start: p[0],
+      end: p[1],
+      children: [
+        {
+          start: 0.3,
+          end: p[2],
+          children: [
+            {
+              start: 0.7,
+              end: [p[2][0]+18, p[2][1]+25],
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+
+    customFunctions.branch2 = function(b) {
+      const svg = this
+      const path = this.draw('path', [b.start, b.end])
+      svg.drawPoints([b.end])
+      if (b?.children.length > 0) {
+        b.children.forEach(c => {
+          const child = {
+            start: path.pointAlong(c.start),
+            end: c.end,
+            children: c.children
+          }
+          svg.draw('branch2', child)
+        })
+      } 
+      return this
+    }
+
+    newSketch().draw('branch2', b2)
+
+  </script>
+</body>
+
+</html>
