@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <script src="js/d3.v7.min.js"></script>
+    <style>
+      body {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+
+      div {
+        width: 200px;
+        height: 200px;
+        border: 1px solid black;
+        padding: 0;
+        margin: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      function newSketch() {
+        const div = document.createElement('div')
+        document.body.append(div)
+        const svg = d3.select(div).append('svg')
+          .attr('viewBox', '-100 -100 200 200')
+        return svg
+      }
+
+      d3.selection.prototype.pen = function(fill, stroke, width) {
+        return this.attr('fill', fill)
+          .attr('stroke', stroke)
+          .attr('stroke-width', width)
+      }
+
+      const drawFns = {}
+
+      drawFns.circle = function({r, c}) {
+        return this.append('circle')
+          .attr('r', r)
+          .attr('cx', c[0])
+          .attr('cy', c[1])
+          .pen('white', 'black', 2)
+      }
+
+      d3.selection.prototype.draw = function(name, args) {
+        const drawFn = drawFns[name]
+        return drawFn.call(this, args)
+      }
+
+      newSketch().draw('circle', {r: 5, c: [0, 0]})
+
+      const lineGen = d3.line().x(p => p[0]).y(p => p[1]).curve(d3.curveBumpY)
+      
+      drawFns.path = function(points) {
+        return this.append('path')
+          .attr('d', lineGen(points))
+          .pen('none', 'black', 2)
+      }
+
+      const points = [[0, 70], [-70, -70]]
+
+      newSketch().draw('path', points)
+
+      d3.selection.prototype.pointAtLength = function(fraction) {
+        const totalLength = this.node().getTotalLength()
+        const targetLength = fraction * totalLength
+        const {x, y} = this.node().getPointAtLength(targetLength)
+        return [x, y]
+      }
+
+      {
+        const svg = newSketch()
+        const path = svg.draw('path', points)
+        const branchPoint = path.pointAtLength(0.3)
+        const branchEnd = [50, -70]
+        svg.draw('path', [branchPoint, branchEnd])
+      }
+
+      {
+        const svg = newSketch()
+        const path = svg.draw('path', points)
+        const branchPoint = path.pointAtLength(0.3)
+        const branchEnd = [50, -70]
+        const path2 = svg.draw('path', [branchPoint, branchEnd])
+        const branchPoint2 = path2.pointAtLength(0.5)
+        const branchEnd2 = [0, -70]
+        const path3 = svg.draw('path', [branchPoint2, branchEnd2])
+      }
+
+      const tree1 = {
+        start: points[0],
+        end: points[1],
+        children: [
+          {
+            start: 0.3,
+            end: [50, -70],
+            children: [
+              {
+                start: 0.5,
+                end: [0, -70]
+              }
+            ]
+          }
+        ]
+      }
+
+      drawFns.tree = function({start, end, children}) {
+        const svg = this
+        const path = svg.draw('path', [start, end])
+        svg.draw('circle', {r: 5, c: end})
+        if (children && children.length > 0) {
+          children.forEach(c => {
+            const {start, end, children} = c
+            c.start = path.pointAtLength(c.start)
+            svg.draw('tree', c) 
+          })
+        }
+      }
+
+      newSketch().draw('tree', tree1)
+
+      {
+        const svg = newSketch()
+        svg.on('click', event => {
+          const p = d3.pointer(event)
+          svg.draw('circle', {r: 5, c: p})
+        })
+      }
+      
+
+
+    </script>
+  </body>
+</html>
