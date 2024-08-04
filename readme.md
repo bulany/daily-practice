@@ -2,6 +2,13 @@
 
 Will try and follow Noah Gibbs Conscious Coding Practice and see what happens.
 
+## Cycle 02
+
+### Week 01
+
+![Week 1 Day 1](https://bulany.github.io/daily-practice/cycle02/img/week1_day1.svg)
+[Week 1 Day 1](https://bulany.github.io/daily-practice/cycle02/week1_day1.html)
+
 ## Cycle 01
 
 ### Week 03

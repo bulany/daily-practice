@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .sketch {
+      width: 200px;
+      height: 200px;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sketch">
+    D3 animations.
+    Languages developing over time.
+  </div>
+  <script>
+    function newSketch() {
+      const div = document.createElement('div')
+      div.classList.add('sketch')
+      document.body.append(div)
+      const svg = d3.select(div).append('svg').attr('viewBox', '0 0 100 100')
+      return svg
+    }
+
+    const tree1 = {
+      root: [50, 75],
+      children: [
+        {
+          c: [20, 20],
+          r: 5
+        },
+        {
+          c: [70, 20],
+          r: 5
+        }
+      ]
+    }
+
+    d3.selection.prototype.pen = function (fill, stroke, width) {
+      return this.attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', width)
+    }
+
+    const drawFns = {}
+
+    d3.selection.prototype.draw = function (name, args) {
+      const drawFn = drawFns[name]
+      return drawFn.call(this, args)
+    }
+
+    const lineGen = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveBumpY)
+
+    drawFns.path = function (points) {
+      return this.append('path')
+        .attr('d', lineGen(points))
+        .pen('none', 'black', 1)
+    }
+
+    newSketch().draw('path', [[50, 75], [20, 20]])
+
+    {
+      const svg = newSketch()
+      const p = svg.draw('path', [[50, 75], [20, 20]])
+      p.attr('stroke-dasharray', 10)
+        .attr('stroke-dashoffset', 50)
+    }
+
+    {
+      const svg = newSketch()
+      const p = svg.draw('path', [[50, 75], [20, 20]])
+      const totalLength = p.node().getTotalLength()
+      const targetLength = totalLength * 0.5
+      p.attr('stroke-dasharray', targetLength)
+        .attr('stroke-dashoffset', 0)
+    }
+
+    {
+      const svg = newSketch()
+      const p = svg.draw('path', [[50, 75], [20, 20]])
+      const totalLength = p.node().getTotalLength()
+
+      function animatePath() {
+        p.attr('stroke-dasharray', 0)
+          .attr('stroke-dashoffset', 0)
+        p.transition()
+          .duration(2000)
+          .attr('stroke-dasharray', totalLength)
+          .on('end', animatePath)
+      }
+      animatePath()
+    }
+
+    {
+      const svg = newSketch()
+      const p = svg.draw('path', [[50, 75], [20, 20]])
+      const totalLength = p.node().getTotalLength()
+
+      function animatePath() {
+        p.attr('stroke-dasharray', `${totalLength} ${totalLength}`)
+          .attr('stroke-dashoffset', totalLength)
+        p.transition()
+          .duration(2000)
+          .attr('stroke-dashoffset', 0)
+          .on('end', animatePath)
+      }
+      animatePath()
+    }
+
+    {
+      const svg = newSketch()
+      const p = svg.draw('path', [[50, 75], [20, 20]])
+      const totalLength = p.node().getTotalLength()
+      p.attr('stroke-dasharray', `${totalLength} ${totalLength}`)
+        .attr('stroke-dashoffset', totalLength)
+      p.append('animate')
+        .attr('attributeName', 'stroke-dashoffset')
+        .attr('values', `${totalLength};0`)
+        .attr('dur', '2s')
+        .attr('repeatCount', 'indefinite')
+    }
+
+    {
+      const svg = d3.select(document.body).append('svg')
+      svg.attr('width', 200).attr('height', 200)
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr('viewBox', '0 0 100 100')
+      svg.append('rect')
+        .attr('width', 100)
+        .attr('height', 100)
+        .attr('x', 0)
+        .attr('y', 0)
+        .pen('none', 'black', 1)
+      const p = svg.draw('path', [[50, 75], [20, 20]])
+      const totalLength = p.node().getTotalLength()
+      p.attr('stroke-dasharray', `${totalLength} ${totalLength}`)
+        .attr('stroke-dashoffset', totalLength)
+      p.append('animate')
+        .attr('attributeName', 'stroke-dashoffset')
+        .attr('values', `${totalLength};0`)
+        .attr('dur', '2s')
+        .attr('repeatCount', 'indefinite')
+
+
+    }
+
+
+  </script>
+</body>
+
+</html>
