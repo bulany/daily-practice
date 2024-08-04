@@ -1,5 +1,15 @@
 # Week 3
 
+## Day 7
+
+tool: html, css, js, d3, svg
+
+task: recreate sketches of flowers
+
+purpose: get good at drawing lines with d3 and svg
+
+time: 30 mins
+
 ## Day 6
 
 tool: html, css, js, d3, svg
