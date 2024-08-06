@@ -1,0 +1,9 @@
+body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+svg {
+  padding: 0;
+  margin: 2px;
+}

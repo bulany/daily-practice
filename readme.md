@@ -6,11 +6,12 @@ Will try and follow Noah Gibbs Conscious Coding Practice and see what happens.
 
 ### Week 01
 
-![Week 1 Day 2](https://bulany.github.io/daily-practice/cycle02/img/week1_day2.svg)
-[Week 1 Day 2](https://bulany.github.io/daily-practice/cycle02/week1_day2.html)
+[![Day 3](cycle02/img/week1_day3.svg)](cycle02/week1_day3.html)
 
-![Week 1 Day 1](https://bulany.github.io/daily-practice/cycle02/img/week1_day1.svg)
-[Week 1 Day 1](https://bulany.github.io/daily-practice/cycle02/week1_day1.html)
+[![Day 2](cycle02/img/week1_day2.svg)](cycle02/week1_day2.html)
+
+[![Day 1](cycle02/img/week1_day1.svg)](cycle02/week1_day1.html)
+
 
 ## Cycle 01
 

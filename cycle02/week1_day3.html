@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="js/d3.v7.min.js"></script>
+    <script src="js/d4.v1.js"></script>
+    <link rel="stylesheet" href="css/colours.css">
+    <link rel="stylesheet" href="css/sketch.css">
+  </head>
+  <body>
+    <script>
+      newSketch().draw('circle', {r: 5, c: [50, 50]})
+
+      const tree1 = {
+      root: [50, 75],
+      children: [
+        {
+          c: [20, 20],
+          r: 10
+        },
+        {
+          c: [70, 20],
+          r: 8
+        }
+      ]
+    }
+
+    const points1 = [tree1.root, tree1.children[0].c]
+
+    newSketch().draw('path', points1)
+
+    newSketch().draw('path', points1).animate()
+
+    {
+      const svg = newSketch()
+      const path = svg.draw('path', points1)
+      const pathAnim = path.animate()
+      pathAnim
+        .attr('dur', '6s')
+        .attr('keyTimes', '0; 0.3; 1')
+        .attr('values', `${path.totalLength}; 0; 0`)
+      const circle = svg.draw('circle', tree1.children[0])
+      const circAnim = circle.animate()
+      circAnim
+        .attr('dur', '6s')
+        .attr('keyTimes', '0; 0.3; 0.6; 1')
+        .attr('values', `0; 0; ${circle.attr('r')}; ${circle.attr('r')}`)
+    }
+
+
+    {
+      const svg = newSketch()
+      const path = svg.draw('path', points1)
+      const pathAnim = path.animate()
+      pathAnim
+        .attr('dur', '6s')
+        .attr('keyTimes', '0; 0.3; 1')
+        .attr('values', `${path.totalLength}; 0; 0`)
+      const circle = svg.draw('circle', tree1.children[0])
+      const circAnim = circle.animate()
+      circAnim
+        .attr('dur', '6s')
+        .attr('keyTimes', '0; 0.3; 0.6; 1')
+        .attr('values', `0; 0; ${circle.attr('r')}; ${circle.attr('r')}`)
+
+      // colours
+      svg.bg.pen('--col-swimmers-pool', 'black', 1)
+      path.pen('none', '--col-velvet-vortex', 1)
+      circle.pen('--col-blissful-berry', 'black', 1)
+    }
+
+
+
+
+    </script>
+  </body>
+</html>
