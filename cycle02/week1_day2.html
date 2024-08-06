@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="js/d3.v7.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    svg {
+      margin: 2px;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+
+    d3.selection.prototype.pen = function (fill, stroke, width) {
+      return this.attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', width)
+    }
+
+    function newSketch() {
+      const svg = d3.select(document.body).append('svg')
+      svg.attr('width', 200)
+        .attr('height', 200)
+        .attr('viewBox', '0 0 100 100')
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+      const rect = svg.append('rect')
+        .pen('white', 'black', 1)
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 100)
+        .attr('height', 100)
+      svg.bg = rect
+      return svg
+    }
+
+    newSketch()
+
+    const drawFns = {}
+
+    const lineGen = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveBumpY)
+
+    drawFns.path = function (points) {
+      const path = this.append('path')
+        .attr('d', lineGen(points))
+        .pen('none', 'black', 1)
+      return path
+    }
+
+    d3.selection.prototype.draw = function (name, args) {
+      const drawFn = drawFns[name]
+      return drawFn.call(this, args)
+    }
+
+    const tree1 = {
+      root: [50, 75],
+      children: [
+        {
+          c: [20, 20],
+          r: 10
+        },
+        {
+          c: [70, 20],
+          r: 8
+        }
+      ]
+    }
+
+    const points1 = [tree1.root, tree1.children[0].c]
+
+
+    newSketch().draw('path', points1)
+
+    let animId = 0
+
+    function getAnimId() {
+      const id = 'anim_' + animId
+      animId++
+      return id
+    }
+
+    const animFns = {}
+
+    d3.selection.prototype.animate = function(args) {
+      const name = this.node().tagName.toLowerCase()
+      const animFn = animFns[name]
+      const anim = animFn.call(this, args)
+      const id = getAnimId()
+      anim.attr('id', id)
+      anim.end = id + '.end'
+      return anim
+    }
+
+    animFns.path = function () {
+      const path = this
+      const totalLength = path.node().getTotalLength()
+      path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+      path.attr('stroke-dashoffset', totalLength)
+      path.totalLength = totalLength
+      const anim = path.append('animate')
+      anim        
+        .attr('attributeName', 'stroke-dashoffset')
+        .attr('values', totalLength + ';0')
+        .attr('dur', '2s')
+        .attr('repeatCount', 'indefinite')
+        .attr('fill', 'freeze')
+      return anim
+    }
+
+    newSketch().draw('path', points1).animate()
+
+    drawFns.circle = function ({ r, c }) {
+      const circle = this.append('circle')
+        .attr('r', r)
+        .attr('cx', c[0])
+        .attr('cy', c[1])
+        .pen('white', 'black', 1)
+      return circle
+    }
+
+    {
+      const svg = newSketch()
+      const path = svg.draw('path', points1)
+      const anim = path.animate()
+      const circle = svg.draw('circle', tree1.children[0])
+    }
+
+
+
+    animFns.circle = function() {
+      const circle = this
+      const r = circle.attr('r')
+      const anim = circle.append('animate')
+      anim        
+        .attr('attributeName', 'r')
+        .attr('values', '0;' + r)
+        .attr('dur', '2s')
+        .attr('repeatCount', 'indefinite')
+        .attr('fill', 'freeze')
+      return anim 
+    }
+
+
+
+    {
+      const svg = newSketch()
+      const path = svg.draw('path', points1)
+      const anim = path.animate()
+      const circle = svg.draw('circle', tree1.children[0])
+      circle.animate()
+    }
+
+    {
+      const svg = newSketch()
+      const path = svg.draw('path', points1)
+      const pathAnim = path.animate()
+      pathAnim.attr('repeatCount', null)
+      const circle = svg.draw('circle', tree1.children[0])
+      const circAnim = circle.animate()
+      circAnim.attr('repeatCount', null)
+      circAnim.attr('begin', '2s')
+      const circAnim2 = circle.animate()
+      circAnim2.attr('values', '0;0').attr('begin', '0s')
+    }
+
+    {
+      const svg = newSketch()
+      const path = svg.draw('path', points1)
+      const pathAnim = path.animate()
+      pathAnim
+        .attr('dur', '4s')
+        .attr('keytimes', '0s;2s;4s')
+        .attr('values', `${path.totalLength};0;0`)
+      const circle = svg.draw('circle', tree1.children[0])
+      const circAnim = circle.animate()
+      circAnim
+        .attr('dur', '4s')
+        .attr('keytimes', '0s;2s;4s')
+        .attr('values', `0;0;${circle.attr('r')}`)
+    }
+
+    {
+      const svg = newSketch()
+      svg.bg.attr('fill', 'red')
+      const path = svg.draw('path', points1)
+      const pathAnim = path.animate()
+      pathAnim
+        .attr('dur', '4s')
+        .attr('keytimes', '0s;2s;4s')
+        .attr('values', `${path.totalLength};0;0`)
+      const circle = svg.draw('circle', tree1.children[0])
+      const circAnim = circle.animate()
+      circAnim
+        .attr('dur', '4s')
+        .attr('keytimes', '0s;2s;4s')
+        .attr('values', `0;0;${circle.attr('r')}`)
+    }
+
+    {
+      const svg = newSketch()
+      const path = svg.draw('path', points1)
+      const pathAnim = path.animate()
+      pathAnim
+        .attr('dur', '6s')
+        .attr('keyTimes', '0; 0.3; 1')
+        .attr('values', `${path.totalLength}; 0; 0`)
+      const circle = svg.draw('circle', tree1.children[0])
+      const circAnim = circle.animate()
+      circAnim
+        .attr('dur', '6s')
+        .attr('keyTimes', '0; 0.3; 0.6; 1')
+        .attr('values', `0; 0; ${circle.attr('r')}; ${circle.attr('r')}`)
+    }
+
+
+
+
+  </script>
+</body>
+
+</html>
