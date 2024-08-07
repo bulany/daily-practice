@@ -98,6 +98,15 @@ animFns.circle = function() {
   return anim 
 }
 
+d3.selection.prototype.keyFrames = function(keytimes, values, duration) {
+  const anim = this
+  anim
+    .attr('keytimes', keytimes.join('; '))
+    .attr('values', values.join('; '))
+    .attr('dur', duration + 's')
+  return anim
+}
+
 d4.newSketch = function() {
   const svg = d3.select(document.body).append('svg')
     .attr('width', 200)

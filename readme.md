@@ -5,6 +5,7 @@ Will try and follow Noah Gibbs Conscious Coding Practice and see what happens.
 ## Cycle 02
 
 ### Week 01
+[![Day 4](cycle02/img/week1_day4.svg)](cycle02/week1_day4.html)
 
 [![Day 3](cycle02/img/week1_day3.svg)](cycle02/week1_day3.html)
 

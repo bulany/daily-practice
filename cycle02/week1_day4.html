@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="js/d3.v7.min.js"></script>
+  <script src="js/d4.v1.js"></script>
+  <link rel="stylesheet" href="css/colours.css">
+  <link rel="stylesheet" href="css/sketch.css">
+</head>
+
+<body>
+  <script>
+    newSketch().draw('circle', { r: 5, c: [50, 50] })
+
+    const tree1 = {
+      root: [50, 75],
+      children: [
+        {
+          c: [20, 20],
+          r: 10
+        },
+        {
+          c: [70, 20],
+          r: 8
+        }
+      ]
+    }
+
+    {
+      const svg = newSketch()
+      const tree = tree1
+      tree.children.forEach(child => {
+        svg.draw('path', [tree.root, child.c])
+        svg.draw('circle', {r: child.r, c: child.c})
+      })
+    }
+
+    {
+      const svg = newSketch()
+      const tree = tree1
+      const timePerLeaf = 2
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        const pathAnim = path.animate()
+        const circle = svg.draw('circle', {r: child.r, c: child.c})
+        const circleAnim = circle.animate()
+      }) 
+    }
+
+    {
+      const svg = newSketch()
+      const tree = tree1
+      const timePerLeaf = 6
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        const pathAnim = path.animate()
+        pathAnim
+          .attr('dur', timePerLeaf+'s')
+          .attr('keytimes', '0; 0.3; 1')
+          .attr('values', `${path.totalLength}; 0; 0`)
+        const circle = svg.draw('circle', {r: child.r, c: child.c})
+        const circleAnim = circle.animate()
+        circle
+          .attr('dur', timePerLeaf+'s')
+          .attr('keytimes', '0; 0.3; 0.6; 1')
+          .attr('values', `0; 0; ${circle.attr('r')}; ${circle.attr('r')}`)
+      }) 
+    }
+
+    {
+      const svg = newSketch()
+      const tree = tree1
+      const timePerLeaf = 6
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        const pathAnim = path.animate()
+        pathAnim.keyFrames([0, 0.3, 1], [path.totalLength, 0, 0], timePerLeaf)
+        const circle = svg.draw('circle', {r: child.r, c: child.c})
+        const circleAnim = circle.animate()
+        circleAnim.keyFrames([0, 0.5, 0.6, 1], [0, 0, child.r, child.r], timePerLeaf)
+      }) 
+    }
+
+    {
+      const svg = newSketch()
+      svg.bg.pen('--col-swimmers-pool', 'black', 1)
+      const tree = tree1
+      const timePerLeaf = 6
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', '--col-velvet-vortex', 1)
+        const pathAnim = path.animate()
+        pathAnim.keyFrames([0, 0.3, 1], [path.totalLength, 0, 0], timePerLeaf)
+        const circle = svg.draw('circle', {r: child.r, c: child.c})
+        circle.pen('--col-blissful-berry', 'black', 1)
+        const circleAnim = circle.animate()
+        circleAnim.keyFrames([0, 0.5, 0.6, 1], [0, 0, child.r, child.r], timePerLeaf)
+
+      }) 
+    }
+
+
+
+
+  </script>
+</body>
+
+</html>
