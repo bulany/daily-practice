@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="css/colours.css">
+  <link rel="stylesheet" href="css/sketch.css">
+  <script src="js/d3.v7.min.js"></script>
+  <script src="js/d4.v1.1.js"></script>
+</head>
+
+<body>
+  <script>
+    newSketch().bg.pen('--col-proton-red', '--col-endless-possibilities', 1)
+
+    const tree1 = {
+      root: [50, 75],
+      children: [
+        {
+          c: [20, 20],
+          r: 10
+        },
+        {
+          c: [70, 20],
+          r: 8
+        }
+      ]
+    }
+
+    {
+      const svg = newSketch()
+      svg.bg.pen('--col-proton-red', '--col-endless-possibilities', 1)
+      const tree = tree1
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', '--col-endless-possibilities', 1)
+        const circle = svg.draw('circle', { r: child.r, c: child.c })
+        circle.pen('--col-endless-possibilities', 'none', 1)
+      })
+    }
+
+    {
+      const svg = newSketch()
+      svg.bg.pen('--col-proton-red', '--col-endless-possibilities', 1)
+      const tree = tree1
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', '--col-endless-possibilities', 1)
+        const circle = svg.draw('circle', { r: child.r, c: child.c })
+        circle.pen('--col-endless-possibilities', 'none', 1)
+        const circleAnim = circle.animate('r', [0, 1, 0, 0.5, 0], [0, 0.25, 0.5, 0.75, 1], 4)
+      })
+    }
+
+    {
+      const svg = newSketch()
+      svg.bg.pen('--col-proton-red', '--col-endless-possibilities', 1)
+      const tree = tree1
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', '--col-endless-possibilities', 1)
+        const pathAnim = path.animate('path', [0, 1, 0, 0.5, 0], [0, 0.25, 0.5, 0.75, 1], 4)
+        const circle = svg.draw('circle', { r: child.r, c: child.c })
+        circle.pen('--col-endless-possibilities', 'none', 1)
+        const circleAnim = circle.animate('r', [0, 1, 0, 0.5, 0], [0, 0.25, 0.5, 0.75, 1], 4)
+      })
+    }
+  </script>
+</body>
+
+</html>
