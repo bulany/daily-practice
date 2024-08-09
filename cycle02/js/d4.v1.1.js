@@ -92,6 +92,37 @@ d3.selection.prototype.animate = function(attr, values, keytimes, duration) {
   return anim
 }
 
+d3.selection.prototype.animate2 = function(attr, values, keytimes, duration) {
+  const sel = this
+  const attrFn = animAttrFns[attr]
+  const {attrName, scale} = attrFn ? attrFn.call(this) : {
+    attrName: attr,
+    scale: d3.scaleLinear([0, 1], [0, sel.attr(attr)]).clamp(true)
+  }
+  const mappedValues = values.map(v => scale(v))
+
+  if (keytimes[0] > 0) {
+    keytimes.unshift(0)
+    mappedValues.unshift(mappedValues[0])
+  }
+  if (keytimes[keytimes.length-1] < 1) {
+    keytimes.push(1)
+    mappedValues.push(mappedValues[mappedValues.length-1])
+  }
+
+  const anim = sel.append('animate')
+  const id = getAnimId()
+  anim
+    .attr('id', id)
+    .attr('attributeName', attrName)
+    .attr('values', mappedValues.join('; '))
+    .attr('keyTimes', keytimes.join('; '))
+    .attr('dur', duration + 's')
+    .attr('repeatCount', 'indefinite')
+    .attr('fill', 'freeze')
+  return anim
+}
+
 
 
 d4.newSketch = function() {
