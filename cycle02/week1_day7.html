@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="css/colours.css">
+  <link rel="stylesheet" href="css/sketch.css">
+  <script src="js/d3.v7.min.js"></script>
+  <script src="js/d4.v1.2.js"></script>
+</head>
+
+<body>
+  <script>
+    const text1 = "Evolution, Basque, ca viens d'ou?, Breton, Pattois"
+
+    const tree1 = {
+      root: [50, 75],
+      children: [
+        {
+          c: [20, 20],
+          r: 10
+        },
+        {
+          c: [70, 20],
+          r: 8
+        }
+      ]
+    }
+
+    const colAccent1 = '--col-somewhere-in-a-fairytale'
+    const colAccent2 = '--col-swimmers-pool'
+    const colBg1 = '--col-blissful-berry'
+
+    {
+      const svg = newSketch()
+      svg.bg.pen(colBg1, colAccent1, 1)
+      const tree = tree1
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', colAccent1, 1)
+        const circle = svg.draw('circle', { r: child.r, c: child.c })
+        circle.pen(colAccent1, 'none', 1)
+      })
+    }
+
+    {
+      const svg = newSketch()
+      svg.bg.pen(colBg1, colAccent1, 1)
+      const tree = tree1
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', colAccent1, 1)
+        path.animate('path', [0, 1], [0, 0.3], 4)
+        const circle = svg.draw('circle', { r: child.r, c: child.c })
+        circle.pen(colAccent1, 'none', 1)
+        circle.animate('r', [0, 1], [0.3, 0.6], 4)
+      })
+    }
+
+
+    {
+      const svg = newSketch()
+      svg.bg.pen(colBg1, colAccent1, 1)
+      const tree = tree1
+      const totalTime = 6
+      const childTime = 1 / (tree.children.length + 1)
+      const elTime = childTime / 2
+      let pathStartTime = 0
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', colAccent1, 1)
+        const pathEndTime = pathStartTime + elTime
+        path.animate('path', [0, 1], [pathStartTime, pathEndTime], totalTime)
+        const circle = svg.draw('circle', { r: child.r, c: child.c })
+        circle.pen(colAccent1, 'none', 1)
+        const circleStartTime = pathEndTime
+        const circleEndTime = circleStartTime + elTime
+        circle.animate('r', [0, 1], [circleStartTime, circleEndTime], totalTime)
+        pathStartTime = circleEndTime
+      })
+    }
+
+
+    const tree2 = {
+      root: [50, 75],
+      children: [
+        {
+          c: [20, 20],
+          r: 10
+        },
+        {
+          c: [70, 20],
+          r: 8
+        },
+        {
+          c: [80, 40],
+          r: 6
+        }
+      ]
+    }
+
+    {
+      const svg = newSketch()
+      svg.bg.pen(colBg1, colAccent1, 1)
+      const tree = tree2
+      const totalTime = 6
+      const childTime = 1 / (tree.children.length + 1)
+      const elTime = childTime / 2
+      let pathStartTime = 0
+      tree.children.forEach(child => {
+        const path = svg.draw('path', [tree.root, child.c])
+        path.pen('none', colAccent1, 1)
+        const pathEndTime = pathStartTime + elTime
+        path.animate('path', [0, 1], [pathStartTime, pathEndTime], totalTime)
+        const circle = svg.draw('circle', { r: child.r, c: child.c })
+        circle.pen(colAccent1, 'none', 1)
+        const circleStartTime = pathEndTime
+        const circleEndTime = circleStartTime + elTime
+        circle.animate('r', [0, 1], [circleStartTime, circleEndTime], totalTime)
+        pathStartTime = circleEndTime
+      })
+    }
+
+
+  </script>
+</body>
+
+</html>
