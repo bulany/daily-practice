@@ -49,6 +49,16 @@ drawFns.circle = function ({ r, c }) {
   return circle
 }
 
+drawFns.rect = function ([x, y, width, height]) {
+  const rect = this.append('rect')
+    .attr('x', x)
+    .attr('y', y)
+    .attr('width', width)
+    .attr('height', height)
+    .pen('white', 'black', 1)
+  return rect
+}
+
 let animId = 0
 
 function getAnimId() {

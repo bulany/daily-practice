@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="css/colours.css">
+  <link rel="stylesheet" href="css/sketch.css">
+  <script src="js/d3.v7.min.js"></script>
+  <script src="js/d4.v1.2.js"></script>
+</head>
+
+<body>
+  <script>
+    newSketch().draw('circle', { r: 10, c: [50, 50] })
+
+    {
+      const svg = newSketch()
+      const numStripes = 12
+      const width = 100
+      const height = 100
+      const rWidth = width / numStripes
+      for (let i = 0; i < numStripes; ++i) {
+        const left = i * rWidth
+        const top = 0
+        svg.draw('rect', [left, top, rWidth, 100])
+      }
+    }
+
+    {
+      const svg = newSketch()
+      const numStripes = 12
+      const width = 100
+      const height = 100
+      const rWidth = width / numStripes
+      const kelly_spectrum_ix = [
+        '--col-juicy-jackfruit',
+        '--col-kiwi-green',
+        '--col-snow-pea'
+      ]
+      for (let i = 0; i < numStripes; ++i) {
+        const left = i * rWidth
+        const top = 0
+        const rect = svg.draw('rect', [left, top, rWidth, 100])
+        const ic = i % kelly_spectrum_ix.length
+        const fill = kelly_spectrum_ix[ic]
+        rect.pen(fill, 'none', 0)
+      }
+    }
+  </script>
+</body>
+
+</html>
