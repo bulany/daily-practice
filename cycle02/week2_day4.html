@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="css/colours.css">
+    <link rel="stylesheet" href="css/sketch.css">
+    <script src="js/d3.v7.min.js"></script>
+    <script src="js/d4.v1.3.js"></script>
+  </head>
+  <body>
+    <script>
+      newSketch().draw('circle', {r: 10, c: [50, 50]})
+
+      {
+        const svg = newSketch()
+        const numStripes = 12
+        const width = 100
+        const rectWidth = width / numStripes
+        const height = 100
+        let x = 0
+        for (let i = 0; i < numStripes; ++i) {
+          svg.draw('rect', [x, 0, rectWidth, height])
+          x += rectWidth
+        }
+      }
+
+      {
+        const svg = newSketch()
+        const numStripes = 12
+        const [width, height] = [100, 100]
+        const rectWidth = width / numStripes
+        let x = 0
+        for (let i = 0; i < numStripes; ++i) {
+          const rect = svg.draw('rect', [x, 0, rectWidth, height])
+          const fill = col.pal_spectrum_ix[i]
+          rect.pen(fill, 'none', 1)
+          x += rectWidth
+        }
+      }
+    </script>
+  </body>
+</html>
