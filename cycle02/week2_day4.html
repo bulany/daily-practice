@@ -36,6 +36,20 @@
           x += rectWidth
         }
       }
+
+      {
+        const svg = newSketch()
+        const numStripes = 12
+        const [width, height] = [100, 100]
+        const rectWidth = width / numStripes
+        let x = 0
+        for (let i = 0; i < numStripes; ++i) {
+          const rect = svg.draw('rect', [x, 0, rectWidth, height])
+          const fill = col.pal_spectrum_ix[i]
+          rect.pen(fill, fill, 1)
+          x += rectWidth
+        }
+      }
     </script>
   </body>
 </html>
