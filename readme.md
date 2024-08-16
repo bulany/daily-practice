@@ -5,6 +5,10 @@ Will try and follow Noah Gibbs Conscious Coding Practice and see what happens.
 ## Cycle 02
 
 ### Week 02
+[![Day 6](cycle02/img/week2_day6.svg)](cycle02/week2_day6.html)
+
+[![Day 5](cycle02/img/week2_day5.svg)](cycle02/week2_day5.html)
+
 [![Day 4](cycle02/img/week2_day4.svg)](cycle02/week2_day4.html)
 
 [![Day 3](cycle02/img/week2_day3.svg)](cycle02/week2_day3.html)

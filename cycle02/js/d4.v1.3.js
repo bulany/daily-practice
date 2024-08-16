@@ -53,6 +53,11 @@ drawFns.path = function (points) {
   const path = this.append('path')
     .attr('d', lineGen(points))
     .pen('none', 'black', 1)
+    path.length = path.node().getTotalLength()
+    path.pointAtLength = length => {
+      const {x, y} = path.node().getPointAtLength(length)
+      return [x, y]
+    }
   return path
 }
 
