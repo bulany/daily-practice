@@ -1,0 +1,9 @@
+rect, long, flat
+  divide 2
+    divide 2
+      divide 3
+
+rect, long, flat
+  divide 2, label 12
+    divide 2, label 6, label 18
+  

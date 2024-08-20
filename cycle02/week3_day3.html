@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="css/colours.css">
+  <script src="js/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <script>
+    const drawing = {}
+
+    drawing.draw = function() {
+      d3.select(document.body).append('svg')
+    }
+
+    drawing.draw()
+
+    drawing.drawSteps = []
+
+    drawing.drawSteps.push(
+      function() {
+        d3.select(document.body).append('div').text('hello')
+      }
+    )
+
+    drawing.draw = function() {
+      drawing.drawSteps.forEach(step => step())
+    }
+
+    drawing.draw()
+
+    drawing.drawSteps = []
+
+    drawing.drawSteps.push(
+      function () {
+        const svg = d3.select(document.body).append('svg')
+        svg.style('background-color', '#8fdc43')
+      }
+    )
+
+    drawing.draw()
+
+    drawing.bgColor = '#38adb8'
+
+    drawing.drawSteps[0] = function() {
+      const svg = d3.select(document.body).append('svg')
+      svg.style('background-color', drawing.bgColor)
+    }
+
+    drawing.draw()
+
+    drawing.bgColor = '#338ad0'
+
+    drawing.draw()
+
+    drawing.bgColor = '#ca6979'
+  
+    drawing.width = 200
+
+    drawing.drawSteps[0] = function() {
+      drawing.svg = d3.select(document.body).append('svg')
+      .style('background-color', drawing.bgColor)
+    }
+
+    drawing.drawSteps.push(function() {
+      drawing.svg.attr('width', drawing.width)
+    })
+
+    drawing.draw()
+
+
+    drawing.height = 200
+
+    drawing.drawSteps.push(function() {
+      drawing.svg.attr('height', drawing.width)
+    })
+
+    drawing.bgColor = '#ed6761'
+    
+    drawing.draw()
+
+    drawing.bgColor = '--col-coral-commander'
+
+    drawing.drawSteps[0] = function() {
+      drawing.svg = d3.select(document.body).append('svg')
+      .style('background-color', `var(${drawing.bgColor})`)
+    }
+
+    drawing.draw()
+
+
+    drawing.viewBox = '0 0 100 100'
+
+    // theme.colors
+    // colors.primary
+    // colors.background
+
+    drawing.drawSteps.push(function() {
+      drawing.svg.attr('xmlns', 'http://www.w3.org/2000/svg')
+    })
+    
+
+    drawing.draw()
+
+    drawing.theme = {}
+
+    drawing.theme.atomic_orange = '#f88e05'
+
+    drawing.theme.background = drawing.theme.atomic_orange
+
+    drawing.drawSteps[0] = function() {
+      drawing.svg = d3.select(document.body).append('svg')
+      .style('background-color', drawing.theme.background)
+    }
+
+    drawing.draw()
+
+
+    drawing.drawSteps = []
+
+    drawing.drawSteps.push(function() {
+      drawing.svg = d3.select(document.body).append('svg')
+    })
+
+    drawing.drawSteps.push(function() {
+      drawing.svg.attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr('width', drawing.width)
+        .attr('height', drawing.height)
+        .attr('viewBox', drawing.viewBox)
+    })
+
+    drawing.theme.tempo = '#38adb8'
+    drawing.theme.background = drawing.theme.tempo
+    
+    drawing.drawSteps.push(function() {
+      drawing.bg = drawing.svg.append('rect')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', drawing.theme.background)
+        .attr('stroke', 'none')
+    })
+
+    drawing.draw()
+
+
+
+
+
+    
+  </script>
+</body>
+</html>
