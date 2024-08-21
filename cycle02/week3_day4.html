@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="css/colours.css">
+  <script src="js/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <script>
+
+    const drawing = {}
+
+    drawing.drawSteps = []
+
+    drawing.draw = function () {
+      drawing.drawSteps.forEach(step => step())
+    }
+
+    d = {}
+
+    d.svg = function(docEl, width, height, viewBox) {
+      drawing.svg = d3.select(docEl).append('svg')
+          .attr('xmlns', 'http://www.w3.org/2000/svg')
+          .attr('width', width)
+          .attr('height', height)
+          .attr('viewBox', viewBox)
+    }
+
+    drawing.drawSteps.push(() => d.svg(document.body, 200, 200, '0 0 100 100'))
+
+    drawing.draw()
+
+    d.pen = function(s, fill, stroke, stroke_width) {
+      drawing.pen = s.append('g')
+        .attr('fill', fill)
+        .attr('stroke', stroke)
+        .attr('stroke-width', stroke_width)
+    }
+
+    drawing.theme = {}
+    drawing.theme.apricot = '#ffd4bc'
+    drawing.theme.vintage_pink = '#ffc3bd'
+    drawing.theme.alazarin_madder_lake = '#f02846'
+    drawing.theme.background = drawing.theme.apricot
+    drawing.theme.primary = drawing.theme.vintage_pink
+    
+    drawing.drawSteps.push(() => d.pen(drawing.svg, drawing.theme.background, drawing.theme.primary, 1))
+
+    drawing.draw()
+
+    d.rect = function(s, x, y, width, height) {
+      drawing.rect = s.append('rect')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('width', width)
+        .attr('height', height)
+    }
+
+    drawing.drawSteps.push(() => d.rect(drawing.pen, 0, 0, '100%', '100%'))
+
+    drawing.draw()
+
+    d.circle = function(s, x, y, r) {
+      drawing.circle = s.append('circle')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', r)
+    }
+
+    drawing.drawSteps.push(() => d.circle(drawing.pen, 50, 50, 5))
+
+    drawing.draw()
+
+    drawing.theme.primary = drawing.theme.alazarin_madder_lake
+
+    drawing.draw()
+
+    d.lineGen = d3.line().x(d => d[0]).y(d => d[1]).curve(d3.curveBumpY)
+
+    d.path = function(s, points) {
+      drawing.path = s.append('path')
+        .attr('d', d.lineGen(points))
+    }
+
+
+    drawing.drawSteps[drawing.drawSteps.length - 1] = () => {
+      d.path(drawing.pen, [[50, 50], [20, 20]])
+    }
+
+    drawing.draw()
+
+    const tree1 = {
+      root: [50, 50],
+      flowers: [
+        {c: [20, 20], r: 7},
+        {c: [60, 20], r: 9}
+      ]
+    }
+
+    d.tree = function(s, tree) {
+      tree.flowers.forEach(flower => {
+        d.path(s, [tree.root, flower.c])
+        d.circle(s, flower.c[0], flower.c[1], flower.r)
+      })
+    }
+
+    drawing.drawSteps[drawing.drawSteps.length - 1] = () => {
+      d.tree(drawing.pen, tree1)
+    }
+
+    drawing.draw()
+
+    tree1.flowers.push({c: [75, 75], r: 7})
+
+    drawing.draw()
+
+
+    tree1.flowers.push({c: [40, 80], r: 6})
+
+    drawing.draw()
+    
+
+    document.body.style.display = 'grid'
+    document.body.style.gridTemplateColumns = 'repeat(auto-fill, 200px)'
+    document.body.style.gridGap = '5px'
+    
+    
+
+
+  </script>
+</body>
+
+</html>
