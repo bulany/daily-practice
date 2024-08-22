@@ -1,0 +1,33 @@
+:root {
+  /* Ngatiljiri Jukurrpa - Ruth Napaljarri Stewart */
+  --col-velvet-vortex: #5a1263;
+  --col-blissful-berry: #a1128e;
+  --col-somewhere-in-a-fairytale: #c798dc;
+  --col-swimmers-pool: #30c0b6;
+  --col-dr-white: #fafafa;
+  --col-bergamot-orange: #f49e57;
+  --col-lioness: #dfaf49;
+  --col-mod-orange: #dd543c;
+  --col-endless-possibilities: #dd473c;
+  --col-proton-red: #840901;
+
+  /* Spectrum IX - Ellsworth Kelly */
+  --col-juicy-jackfruit: #ede13a;
+  --col-kiwi-green: #8fdc43;
+  --col-snow-pea: #6ad27a;
+  --col-tempo: #38adb8;
+  --col-splish-splash: #338ad0;
+  --col-indigo-light: #6475c7;
+  --col-scampi: #7361a3;
+  --col-viola-grey: #8c689a;
+  --col-lovebirds: #ca6979;
+  --col-coral-commander: #ed6761;
+  --col-atomic-orange: #f88e05;
+  --col-cakepop-sorbet: #f9c747;
+}
+
+body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 200px);
+  gap: 5px;
+}
