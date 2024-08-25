@@ -1,0 +1,76 @@
+<!DOCTYPE>
+<html>
+
+<head>
+  <link rel="stylesheet" href="css/colours.v1.1.css">
+  <script src="js/d3.v7.min.js"></script>
+  <script src="js/d4.v1.4.js"></script>
+</head>
+
+<body>
+  <script>
+    const drawing = NewDrawing()
+    const theme = {}
+
+    theme.cakepopSorbet = '#f9c747'
+    theme.tempo = '#38adb8'
+    theme.lovebirds = '#ca6979'
+
+    theme.background = '--col-tempo'
+    theme.primary = '--col-lovebirds'
+
+    let viewBox = '0 0 100 100'
+
+    drawing.addStep(() => {
+      drawing.svg = d3.select(document.body).add('svg', 200, 200, viewBox)
+      drawing.pen = drawing.svg.add('pen', theme.background, theme.primary, 1)
+      drawing.pen.add('rect', [0, 0], '100%', '100%')
+    })
+
+    const tree1 = {
+      "root": [
+        50,
+        50
+      ],
+      "flowers": [
+        {
+          "c": [
+            20,
+            20
+          ],
+          "r": 7
+        },
+        {
+          "c": [
+            60,
+            20
+          ],
+          "r": 9
+        },
+        {
+          "c": [
+            75,
+            75
+          ],
+          "r": 7
+        },
+        {
+          "c": [
+            40,
+            80
+          ],
+          "r": 6
+        }
+      ]
+    }
+
+    drawing.addStep(
+      drawing.tree = drawing.pen.add('tree', tree1)
+    )
+
+
+
+  </script>
+</body>
+
+</html>
